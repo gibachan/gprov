@@ -15,37 +15,43 @@ public struct Gprov {
 
     public init() {}
 
-    public func run(profileName: String?) {
+    public func list(for type: ListType) {
         let profileNames = getProvisioningProfileNames()
-
-        if let profileName {
-            // Show corresponding provisiong profile detail
-            if let fileName = profileNames.first(where: { $0 == profileName }) {
-                if let profile = getProvisioningProfile(of: fileName) {
-                    print("\(profile)")
-                    return
-                }
-            }
-            
-            print("Invalid provisioning profile name")
+        if profileNames.isEmpty {
+            print("Provisioning Profile is not found.")
         } else {
-            // Show all provisioning profile list
-            guard !profileNames.isEmpty else {
-                print("Provisioning Profile is not found.")
+            switch type {
+            case .all:
+                printAllProfiles(profileNames)
+            case .available:
+                printAvailableProfiles(profileNames)
+            case .expired:
+                printExpiredProfiles(profileNames)
+            }
+        }
+    }
+
+    public func detail(of profileName: String) {
+        let profileNames = getProvisioningProfileNames()
+        if let fileName = profileNames.first(where: { $0 == profileName }) {
+            if let profile = getProvisioningProfile(of: fileName) {
+                print("\(profile)")
                 return
             }
-
-            print("Provisioning Profiles:")
-            profileNames.forEach { print($0) }
         }
+
+        print("Invalid provisioning profile name")
     }
 }
 
 private extension Gprov {
+    var parentPath: String {
+        return "\(fileManager.homeDirectoryForCurrentUser.path)/\(provisioningProfilesDirectory)"
+    }
+
     func getProvisioningProfileNames() -> [String] {
-        let path = "\(fileManager.homeDirectoryForCurrentUser.path)/\(provisioningProfilesDirectory)"
         do {
-            return try fileManager.contentsOfDirectory(atPath: path)
+            return try fileManager.contentsOfDirectory(atPath: parentPath)
         } catch {
             print(error)
             return []
@@ -53,8 +59,8 @@ private extension Gprov {
     }
 
     func getProvisioningProfile(of fileName: String) -> ProvisioningProfile? {
-        let path = "\(fileManager.homeDirectoryForCurrentUser.path)/\(provisioningProfilesDirectory)/\(fileName)"
-        guard let data = fileManager.contents(atPath: path) as? NSData else {
+        let filePath = "\(parentPath)/\(fileName)"
+        guard let data = fileManager.contents(atPath: filePath) as? NSData else {
             preconditionFailure("\(fileName) could not be read")
         }
 
@@ -78,6 +84,40 @@ private extension Gprov {
             return ProvisioningProfile(plist: plist)
         } catch {
             return nil
+        }
+    }
+
+    func printAllProfiles(_ profileNames: [String]) {
+        print("Provisioning Profiles:")
+
+        profileNames.forEach {
+            if let profile = getProvisioningProfile(of: $0) {
+                print("\($0) \"\(profile.name)\"")
+            } else {
+                print("\($0) \"Invalid provisioning profile")
+            }
+        }
+    }
+
+    func printAvailableProfiles(_ profileNames: [String]) {
+        print("Available provisioning Profiles:")
+
+        profileNames.forEach {
+            if let profile = getProvisioningProfile(of: $0),
+               !profile.isExpired {
+                print("\($0) \"\(profile.name)\"")
+            }
+        }
+    }
+
+    func printExpiredProfiles(_ profileNames: [String]) {
+        print("Expired provisioning Profiles:")
+
+        profileNames.forEach {
+            if let profile = getProvisioningProfile(of: $0),
+               profile.isExpired {
+                print("\($0) \"\(profile.name)\"")
+            }
         }
     }
 }

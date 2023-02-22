@@ -1,3 +1,3 @@
 # gprov
 
-A command line tool for digging into provisioning profiles on your local machine.
+🔍 A command line tool for exploring provisioning profiles on your local machine.

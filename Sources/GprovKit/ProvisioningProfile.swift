@@ -48,6 +48,13 @@ extension ProvisioningProfile: CustomStringConvertible {
             return ""
         }
     }
+    var isExpired: Bool {
+        if let expirationDate {
+            return expirationDate < Date()
+        } else {
+            return false
+        }
+    }
 
     var description: String {
         """
@@ -57,7 +64,7 @@ extension ProvisioningProfile: CustomStringConvertible {
         UUID: \(uuid)"
         Platform: \(platforms)
         Creation Date: \(createdAt)
-        Expiration Date: \(expireAt)
+        Expiration Date: \(expireAt) \(isExpired ? "(Expired)" : "")
         """
     }
 }

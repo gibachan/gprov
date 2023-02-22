@@ -1,14 +1,11 @@
 import ArgumentParser
 import GprovKit
 
-import ArgumentParser
-
 @main
 struct Main: ParsableCommand {
-    @Option(name: .shortAndLong, help: "Name of Provisionig profile file")
-    var profile: String? = nil
-
-    mutating func run() throws {
-        Gprov().run(profileName: profile)
-    }
+    public static let configuration = CommandConfiguration(
+      abstract: "🔍 Explore provisiong profiles.",
+      version: "0.0.0",
+      subcommands: [Profile.self, List.self]
+    )
 }
