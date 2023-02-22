@@ -15,6 +15,7 @@ struct ProvisioningProfile {
     let platforms: [String]
     let creationDate: Date?
     let expirationDate: Date?
+    let certificates: [Certificate]
 }
 
 extension ProvisioningProfile {
@@ -30,6 +31,10 @@ extension ProvisioningProfile {
         self.platforms = dict["Platform"] as? [String] ?? []
         self.creationDate = dict["CreationDate"] as? Date
         self.expirationDate = dict["ExpirationDate"] as? Date
+
+        let certificates = (dict["DeveloperCertificates"] as? [Data] ?? [])
+            .compactMap { Certificate(data: $0) }
+        self.certificates = certificates
     }
 }
 
@@ -57,7 +62,12 @@ extension ProvisioningProfile: CustomStringConvertible {
     }
 
     var description: String {
-        """
+        var certificatesString = ""
+        certificates.forEach {
+            certificatesString += "    \($0.name)\n"
+        }
+
+        return """
         Name: \(name)
         App ID Name: \(appIDName)
         Team ID: \(teamIDs)
@@ -65,6 +75,8 @@ extension ProvisioningProfile: CustomStringConvertible {
         Platform: \(platforms)
         Creation Date: \(createdAt)
         Expiration Date: \(expireAt) \(isExpired ? "(Expired)" : "")
+        Certificates:
+        \(certificatesString)
         """
     }
 }
