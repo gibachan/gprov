@@ -15,17 +15,28 @@ public struct Gprov {
 
     public init() {}
 
-    public func run() {
+    public func run(profileName: String?) {
         let profileNames = getProvisioningProfileNames()
 
-        print("Provisioning Profiles:")
-
-        profileNames.forEach {
-            if let profile = getProvisioningProfile(of: $0) {
-                print("\($0) \(profile)")
-            } else {
-                print("\($0) Invalid provisioning profile")
+        if let profileName {
+            // Show corresponding provisiong profile detail
+            if let fileName = profileNames.first(where: { $0 == profileName }) {
+                if let profile = getProvisioningProfile(of: fileName) {
+                    print("\(profile)")
+                    return
+                }
             }
+            
+            print("Invalid provisioning profile name")
+        } else {
+            // Show all provisioning profile list
+            guard !profileNames.isEmpty else {
+                print("Provisioning Profile is not found.")
+                return
+            }
+
+            print("Provisioning Profiles:")
+            profileNames.forEach { print($0) }
         }
     }
 }
