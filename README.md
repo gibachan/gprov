@@ -37,6 +37,12 @@ Show expired provisioning profiles
 $ gprov list --type expired 
 ```
 
+Open the directory where provisioning profiles are stored
+
+```
+$ gprov open
+```
+
 ### Detail of a provisioning profile
 
 ```

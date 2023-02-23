@@ -5,6 +5,7 @@
 //  Created by Tatsuyuki Kobayashi on 2023/02/22.
 //
 
+import AppKit
 import CoreFoundation
 import CryptoKit
 import Foundation
@@ -41,6 +42,13 @@ public struct Gprov {
         }
 
         print("Invalid provisioning profile name")
+    }
+
+    public func open() {
+        let url = fileManager
+            .homeDirectoryForCurrentUser
+            .appendingPathComponent(provisioningProfilesDirectory)
+        NSWorkspace.shared.open(url)
     }
 }
 

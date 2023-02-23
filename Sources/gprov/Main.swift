@@ -6,6 +6,6 @@ struct Main: ParsableCommand {
     public static let configuration = CommandConfiguration(
       abstract: "🔍 Explore provisiong profiles.",
       version: "0.0.1",
-      subcommands: [Profile.self, List.self]
+      subcommands: [List.self, Open.self, Profile.self]
     )
 }
