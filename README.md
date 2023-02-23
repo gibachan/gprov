@@ -13,6 +13,10 @@ $ brew install gibachan/tap/gprov
 ### Installing from source
 
 ```
+$ make install
+
+or
+
 $ swift build -c release
 $ cp .build/release/gprov /usr/local/bin/gprov
 ```
