@@ -54,6 +54,15 @@ Open the directory where provisioning profiles are stored
 $ gprov open
 ```
 
+Delete all expired provisioning profiles
+
+```
+$ gprov delete-expired
+Deleting expired provisioning Profiles...
+.../xxxxxxx-yyyy-0000-1111-222222222222.mobileprovision is deleted.
+.../xxxxxxx-yyyy-0000-1111-333333333333.mobileprovision is deleted.
+```
+
 ### Detail of a provisioning profile
 
 ```

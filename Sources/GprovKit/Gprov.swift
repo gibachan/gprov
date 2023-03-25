@@ -50,6 +50,32 @@ public struct Gprov {
             .appendingPathComponent(provisioningProfilesDirectory)
         NSWorkspace.shared.open(url)
     }
+
+    public func deleteExpired() {
+        let profileNames = getProvisioningProfileNames()
+        let expiredProfileNames = profileNames.filter {
+            guard let profile = getProvisioningProfile(of: $0) else {
+                return false
+            }
+            return profile.isExpired
+        }
+        guard !expiredProfileNames.isEmpty else {
+            print("Expired provisioning profile is not found.")
+            return
+        }
+
+        print("Deleting expired provisioning Profiles...")
+
+        expiredProfileNames.forEach {
+            let filePath = "\(parentPath)/\($0)"
+            do {
+                try fileManager.removeItem(atPath: filePath)
+                print("\(filePath) is deleted.")
+            } catch {
+                print(error)
+            }
+        }
+    }
 }
 
 private extension Gprov {
