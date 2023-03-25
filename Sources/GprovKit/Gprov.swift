@@ -99,10 +99,11 @@ private extension Gprov {
         print("Provisioning Profiles:")
 
         profileNames.forEach {
+            let filePath = "\(parentPath)/\($0)"
             if let profile = getProvisioningProfile(of: $0) {
-                print("\($0) \"\(profile.name)\"")
+                print("\(filePath) \"\(profile.name)\"")
             } else {
-                print("\($0) \"Invalid provisioning profile")
+                print("\(filePath) \"Invalid provisioning profile")
             }
         }
     }
@@ -111,9 +112,10 @@ private extension Gprov {
         print("Available provisioning Profiles:")
 
         profileNames.forEach {
+            let filePath = "\(parentPath)/\($0)"
             if let profile = getProvisioningProfile(of: $0),
                !profile.isExpired {
-                print("\($0) \"\(profile.name)\"")
+                print("\(filePath) \"\(profile.name)\"")
             }
         }
     }
@@ -122,9 +124,10 @@ private extension Gprov {
         print("Expired provisioning Profiles:")
 
         profileNames.forEach {
+            let filePath = "\(parentPath)/\($0)"
             if let profile = getProvisioningProfile(of: $0),
                profile.isExpired {
-                print("\($0) \"\(profile.name)\"")
+                print("\(filePath) \"\(profile.name)\"")
             }
         }
     }
