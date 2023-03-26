@@ -33,11 +33,20 @@ public struct Gprov {
     }
 
     public func detail(of profileName: String) {
-        let profileNames = getProvisioningProfileNames()
-        if let fileName = profileNames.first(where: { $0 == profileName }) {
-            if let profile = getProvisioningProfile(of: fileName) {
+        let path = (profileName as NSString).expandingTildeInPath
+        if fileManager.fileExists(atPath: path) {
+            if let profile = getProvisioningProfile(of: path) {
                 print("\(profile)")
                 return
+            }
+        } else {
+            let profileNames = getProvisioningProfileNames()
+            if let fileName = profileNames.first(where: { $0 == profileName }) {
+                let filePath = "\(parentPath)/\(fileName)"
+                if let profile = getProvisioningProfile(of: filePath) {
+                    print("\(profile)")
+                    return
+                }
             }
         }
 
@@ -92,10 +101,9 @@ private extension Gprov {
         }
     }
 
-    func getProvisioningProfile(of fileName: String) -> ProvisioningProfile? {
-        let filePath = "\(parentPath)/\(fileName)"
-        guard let data = fileManager.contents(atPath: filePath) as? NSData else {
-            preconditionFailure("\(fileName) could not be read")
+    func getProvisioningProfile(of filePath: String) -> ProvisioningProfile? {
+       guard let data = fileManager.contents(atPath: filePath) as? NSData else {
+            preconditionFailure("\(filePath) could not be read")
         }
 
         var decoder: CMSDecoder?
